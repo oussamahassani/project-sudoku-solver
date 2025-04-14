@@ -46,22 +46,22 @@ class SudokuSolver {
     const emptyCells = puzzleArray
       .map((cell, index) => (cell === "." ? index : null))
       .filter((cell) => cell !== null);
-      for (let i = 0; i < 81; i++) {
-        const char = puzzleArray[i];
-        if (char !== "." && char !== "0") {
-          const row = Math.floor(i / 9);
-          const col = i % 9;
-          puzzleArray[i] = "."; // Temporarily remove value to avoid self-conflict
-          const valid =
-            this.checkRowPlacement(puzzleArray.join(""), row, col, char) &&
-            this.checkColPlacement(puzzleArray.join(""), row, col, char) &&
-            this.checkRegionPlacement(puzzleArray.join(""), row, col, char);
-          puzzleArray[i] = char;
-          if (!valid) return null; // ❌ Invalid puzzle
-        }
+    for (let i = 0; i < 81; i++) {
+      const char = puzzleArray[i];
+      if (char !== "." && char !== "0") {
+        const row = Math.floor(i / 9);
+        const col = i % 9;
+        puzzleArray[i] = "."; // Temporarily remove value to avoid self-conflict
+        const valid =
+          this.checkRowPlacement(puzzleArray.join(""), row, col, char) &&
+          this.checkColPlacement(puzzleArray.join(""), row, col, char) &&
+          this.checkRegionPlacement(puzzleArray.join(""), row, col, char);
+        puzzleArray[i] = char;
+        if (!valid) return null; // ❌ Invalid puzzle
       }
-    
-    const solvePuzzle = (puzzleString, puzzle, emptyCells) => {
+    }
+
+    const solvePuzzle = (puzzle, emptyCells) => {
       if (emptyCells.length === 0) {
         return puzzle;
       }
@@ -70,19 +70,19 @@ class SudokuSolver {
         const value = i.toString();
         if (
           this.checkRowPlacement(
-            puzzleString,
+            puzzle.join(""),
             Math.floor(cell / 9),
             cell % 9,
             value,
           ) &&
           this.checkColPlacement(
-            puzzleString,
+            puzzle.join(""),
             Math.floor(cell / 9),
             cell % 9,
             value,
           ) &&
           this.checkRegionPlacement(
-            puzzleString,
+            puzzle.join(""),
             Math.floor(cell / 9),
             cell % 9,
             value,
@@ -90,7 +90,6 @@ class SudokuSolver {
         ) {
           puzzle[cell] = value;
           const solution = solvePuzzle(
-            puzzleString,
             puzzle,
             emptyCells.slice(1),
           );
@@ -102,7 +101,7 @@ class SudokuSolver {
       }
       return null;
     };
-    return solvePuzzle(puzzleString, puzzleArray, emptyCells);
+    return solvePuzzle(puzzleArray, emptyCells);
   }
 }
 
