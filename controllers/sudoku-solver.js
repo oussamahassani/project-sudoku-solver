@@ -46,6 +46,21 @@ class SudokuSolver {
     const emptyCells = puzzleArray
       .map((cell, index) => (cell === "." ? index : null))
       .filter((cell) => cell !== null);
+      for (let i = 0; i < 81; i++) {
+        const char = puzzleArray[i];
+        if (char !== "." && char !== "0") {
+          const row = Math.floor(i / 9);
+          const col = i % 9;
+          puzzleArray[i] = "."; // Temporarily remove value to avoid self-conflict
+          const valid =
+            this.checkRowPlacement(puzzleArray.join(""), row, col, char) &&
+            this.checkColPlacement(puzzleArray.join(""), row, col, char) &&
+            this.checkRegionPlacement(puzzleArray.join(""), row, col, char);
+          puzzleArray[i] = char;
+          if (!valid) return null; // ❌ Invalid puzzle
+        }
+      }
+    
     const solvePuzzle = (puzzleString, puzzle, emptyCells) => {
       if (emptyCells.length === 0) {
         return puzzle;
