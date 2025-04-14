@@ -22,7 +22,23 @@ class SudokuSolver {
   }
 
   checkRegionPlacement(puzzleString, row, column, value) {
-    return true;
+    const grid = [];
+    for (let i = 0; i < 9; i++) {
+      grid.push(puzzleString.slice(i * 9, (i + 1) * 9).split(""));
+    }
+
+    const startRow = Math.floor(row / 3) * 3;
+    const startCol = Math.floor(column / 3) * 3;
+
+    for (let r = startRow; r < startRow + 3; r++) {
+      for (let c = startCol; c < startCol + 3; c++) {
+        if (grid[r][c] === value) {
+          return false; // value already exists in the region
+        }
+      }
+    }
+
+    return true; // value can be placed safely
   }
 
   solve(puzzleString) {
@@ -30,7 +46,7 @@ class SudokuSolver {
     const emptyCells = puzzleArray
       .map((cell, index) => (cell === "." ? index : null))
       .filter((cell) => cell !== null);
-    const solvePuzzle = (puzzle, emptyCells) => {
+    const solvePuzzle = (puzzleString, puzzle, emptyCells) => {
       if (emptyCells.length === 0) {
         return puzzle;
       }
@@ -39,26 +55,30 @@ class SudokuSolver {
         const value = i.toString();
         if (
           this.checkRowPlacement(
-            puzzle,
+            puzzleString,
             Math.floor(cell / 9),
             cell % 9,
             value,
           ) &&
           this.checkColPlacement(
-            puzzle,
+            puzzleString,
             Math.floor(cell / 9),
             cell % 9,
             value,
           ) &&
           this.checkRegionPlacement(
-            puzzle,
+            puzzleString,
             Math.floor(cell / 9),
             cell % 9,
             value,
           )
         ) {
           puzzle[cell] = value;
-          const solution = solvePuzzle(puzzle, emptyCells.slice(1));
+          const solution = solvePuzzle(
+            puzzleString,
+            puzzle,
+            emptyCells.slice(1),
+          );
           if (solution) {
             return solution;
           }
@@ -67,6 +87,7 @@ class SudokuSolver {
       }
       return null;
     };
+    return solvePuzzle(puzzleString, puzzleArray, emptyCells);
   }
 }
 

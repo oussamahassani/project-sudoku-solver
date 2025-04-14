@@ -63,5 +63,10 @@ module.exports = function (app) {
       res.json({ error: "Puzzle cannot be solved" });
       return;
     }
+    else {
+ 
+        res.json({ solution: solution.join("") });
+      
+    }
   });
 };
